@@ -348,9 +348,11 @@ class Ui_MainWindow(object):
             if (self.checkBox.isChecked()):
                 #Scans first IP address in list; function returns 
                 #list of open ports.
-                openPorts = scanner.portScan(addresses[0])
+                scanner = PortScanner()
+                scanner.portScan(addresses[0])
+                # openPorts = scanner.portScan(addresses[0])
                 #Adds each port to gui list.
-                for port in openPorts:
+                for port in scanner.ports:
                     self.li_ports.addItem(str(port))
 
             #Web Server

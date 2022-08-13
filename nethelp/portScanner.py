@@ -4,31 +4,33 @@ import sys
 sys.path.insert(0, '../helpers')
 import helpers.constants as constant
 
-def portScan(address):
-	nm = nmap.PortScanner()
-	openPorts = []
+class PortScanner():
+	ports = []
 
-	for port in constant.COMMON_PORTS:
-		try:
-			ports = f'{port}-{port}'
-			nm.scan(address, ports)
+	def portScan(self, address):
+		nm = nmap.PortScanner()
 
-			print(1)
+		for port in constant.COMMON_PORTS:
+			try:
+				ports = f'{port}-{port}'
+				nm.scan(address, ports)
 
-			result = list(nm[address]['tcp'].keys())[0]
+				print(1)
 
-			print(2)
+				result = list(nm[address]['tcp'].keys())[0]
 
-			tmp = nm[address]['tcp'][int(port)]['state']
+				print(2)
 
-			print(3)
+				tmp = nm[address]['tcp'][int(port)]['state']
 
-			result = f"{result} - {tmp}"
+				print(3)
 
-			print(4)
+				result = f"{result} - {tmp}"
 
-			openPorts.append(result)
-		except:
-			print(f"Cannot scan port {port}.")
+				print(4)
 
-	return(openPorts)
+				self.ports.append(result)
+			except:
+				print(f"Cannot scan port {port}.")
+
+		return(openPorts)
