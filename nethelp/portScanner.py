@@ -12,8 +12,8 @@ class PortScanner():
 
 		for port in constant.COMMON_PORTS:
 			try:
-				ports = f'{port}-{port}'
-				nm.scan(address, ports)
+				print(0)
+				nm.scan(address, port)
 
 				print(1)
 
@@ -31,6 +31,4 @@ class PortScanner():
 
 				self.ports.append(result)
 			except:
-				print(f"Cannot scan port {port}.")
-
-		return(openPorts)
+				self.ports.append(f"Cannot scan port {port}.")

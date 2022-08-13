@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import nethelp.netFunctions as nethelp
-import nethelp.portScanner as scanner
+from nethelp.portScanner import *
 import helpers.helperFunctions as windowhelp
 import helpers.constants as constant
 from targetdata.targetData import *
