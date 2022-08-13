@@ -330,16 +330,15 @@ class Ui_MainWindow(object):
 
         if (validDomain):
             #A
-            #Gets A records as string and splits them into list.
-            addresses = nethelp.getA(domain).split()
+            #Gets A records as list.
+            addresses = nethelp.getA(domain)
             #Adds each record to gui list.
             for address in addresses:
                 self.li_addresses.addItem(address)
 
             #NS
-            #Gets NS records as string and splits them into list.
+            #Gets NS records as list.
             nameservers = nethelp.getNS(domain)
-            nameservers = nameservers.split()
             #Adds each record to gui list.
             for server in nameservers:
                 self.li_nameservers.addItem(server)

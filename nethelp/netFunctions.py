@@ -43,37 +43,47 @@ def verifyDomain(domain):
     return(validity)
 
 def getA(domain):
-    tmp = os.popen(f"nslookup -q=A {domain}").read()
-    tmp = tmp.split()
-    returnAddress = ""
+    try:
+        tmp = os.popen(f"nslookup -q=A {domain}").read()
+        tmp = tmp.split()
+        returnAddress = []
 
-    count = 0
-    for word in tmp:
-        if (count >= 2):
-            returnAddress += word
-            returnAddress += ' '
+        count = 0
+        for word in tmp:
+            if (count >= 2):
+                returnAddress.append(word)
 
-        if (word == "Address:") or (word == "Addresses:"):
-            count += 1
+            if (word == "Address:") or (word == "Addresses:"):
+                count += 1
+    except:
+        returnAddress = "Connection failed."
+
+    if (len(returnAddress) == 0):
+        returnAddress.append("No address found.")
 
     return(returnAddress)
 
 def getNS(address):
-    tmp = os.popen(f"nslookup -q=NS {address}").read()
-    tmp = tmp.split()
-    returnAddresses = ""
-    timer = -1;
+    try:
+        tmp = os.popen(f"nslookup -q=NS {address}").read()
+        tmp = tmp.split()
+        returnAddresses = []
+        timer = -1;
 
-    startRead = False
-    for word in tmp:
-        if (word == "nameserver"):
-            timer = 2;
+        startRead = False
+        for word in tmp:
+            if (word == "nameserver"):
+                timer = 2;
 
-        if (timer == 0):
-            returnAddresses += word
-            returnAddresses += ' '
+            if (timer == 0):
+                returnAddresses.append(word)
 
-        timer -= 1
+            timer -= 1
+    except:
+        returnAddresses.append("Connection failed.")
+
+    if (len(returnAddresses) == 0):
+        returnAddresses.append("No address found.")
 
     return(returnAddresses)
 
