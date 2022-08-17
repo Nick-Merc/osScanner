@@ -349,11 +349,11 @@ class Ui_MainWindow(object):
                 #Scans first IP address in list; function returns 
                 #list of open ports.
                 scanner = PortScanner()
-                scanner.portScan(addresses[0])
-                # openPorts = scanner.portScan(addresses[0])
+                portsToScan = { '80', '443'}
+                scanner.scan(addresses[0], portsToScan)
                 #Adds each port to gui list.
-                for port in scanner.ports:
-                    self.li_ports.addItem(str(port))
+                for port in scanner.scanResults:
+                    self.li_ports.addItem(port)
 
             #Web Server
             #Gets webserver by making a head request; function

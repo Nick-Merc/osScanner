@@ -2,15 +2,14 @@ import nmap
 import sys
 
 sys.path.insert(0, '../helpers')
-import helpers.constants as constant
 
 class PortScanner():
-	ports = []
+	scanResults = []
 
-	def portScan(self, address):
+	def scan(self, address, ports):
 		nm = nmap.PortScanner()
 
-		for port in constant.COMMON_PORTS:
+		for port in ports:
 			try:
 				print(0)
 				nm.scan(address, port)
@@ -29,6 +28,6 @@ class PortScanner():
 
 				print(4)
 
-				self.ports.append(result)
+				self.scanResults.append(result)
 			except:
-				self.ports.append(f"Cannot scan port {port}.")
+				self.scanResults.append(f"Cannot scan port {port}.")
