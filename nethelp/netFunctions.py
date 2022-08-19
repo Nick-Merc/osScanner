@@ -31,13 +31,21 @@ def verifyDomain(domain):
         if (letter == '.'):
             count += 1
 
-    if (count == 1):
+    if (count == 1 or count == 2):
         tmp = domain.split('.')
-        tld = tmp[1]
+        if (count == 1):
+            tld = tmp[1]
+        else:
+            tld = tmp[2]
 
         for suffix in validTLDs:
             if (tld == suffix):
                 validity = True
+                break
+
+        for value in tmp:
+            if (len(value) <= 0):
+                validity = False
                 break
 
     return(validity)

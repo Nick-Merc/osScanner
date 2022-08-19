@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import nethelp.netFunctions as nethelp
-from nethelp.portScanner import *
+import nethelp.socketPortScanner as nosPortScanner
 import helpers.helperFunctions as windowhelp
 import helpers.constants as constant
 from targetdata.targetData import *
@@ -348,11 +348,11 @@ class Ui_MainWindow(object):
             if (self.checkBox.isChecked()):
                 #Scans first IP address in list; function returns 
                 #list of open ports.
-                scanner = PortScanner()
-                portsToScan = { '80', '443'}
+                scanner = nosPortScanner.PortScanner()
+                portsToScan = {22, 53, 80, 139, 445}
                 scanner.scan(addresses[0], portsToScan)
                 #Adds each port to gui list.
-                for port in scanner.scanResults:
+                for port in scanner.portStates:
                     self.li_ports.addItem(port)
 
             #Web Server
