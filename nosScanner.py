@@ -177,6 +177,12 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(320, 50, 89, 22))
         self.comboBox.setObjectName("comboBox")
+        self.comboBox.currentIndexChanged.connect(lambda: self.loadTargetData(self.comboBox.currentIndex()))
+
+        self.lE_ports = QtWidgets.QLineEdit(self.centralwidget)
+        self.lE_ports.setGeometry(QtCore.QRect(380, 220, 35, 22))
+        self.lE_ports.setObjectName("lE_ports")
+        self.lE_ports.returnPressed.connect(self.addNewPort)
 
         self.li_addresses = QtWidgets.QListWidget(self.centralwidget)
         self.li_addresses.setGeometry(QtCore.QRect(420, 50, 131, 131))
@@ -220,6 +226,7 @@ class Ui_MainWindow(object):
         self.li_whois.raise_()
         self.checkBox.raise_()
         self.comboBox.raise_()
+        self.lE_ports.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -239,6 +246,7 @@ class Ui_MainWindow(object):
 
         self.targets = []
         self.iteration = 0
+        self.portsToScan = []
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -259,14 +267,23 @@ class Ui_MainWindow(object):
         self.actionClear_Data.setText(_translate("MainWindow", "Clear Data"))
         self.checkBox.setText(_translate("MainWindow", "Enable Port Scan"))
 
+    def addNewPort(self):
+        port = self.lE_ports.text()
+        self.portsToScan.append(int(port))
+        tmp = f'Port {port} is UNSCANNED'
+        self.li_ports.addItem(tmp)
+        self.lE_ports.clear()
 
-    def loadTargetData(target):
+    def loadTargetData(self, target):
         windowhelp.clearData(self)
+        selectedData = self.targets[0]
 
+        count = 0
         for data in self.targets:
-            if (target == data.name):
+            if (target == count):
                 selectedData = data
                 break
+            count += 1
 
         for address in selectedData.addresses:
             self.li_addresses.addItem(address)
@@ -315,7 +332,8 @@ class Ui_MainWindow(object):
                 self.li_whois.addItem(line)
 
             nameservers = []
-            self.targets.append(TargetData(address, address, nameservers, 999, webserver, parsedData))
+
+            self.targets.append(TargetData(address, address, nameservers, portList, webserver, parsedData))
             windowhelp.addComboItem(self)
 
             self.iteration += 1
@@ -324,6 +342,8 @@ class Ui_MainWindow(object):
     def scanDomain(self):
         #Gets domain string from text edit box after pressing scan.
         domain = self.lE_domain.text()
+        #Clears current data.
+        windowhelp.clearData(self)
 
         #Verification: Checks if domain is in proper form and has approved tld.
         validDomain = nethelp.verifyDomain(domain)
@@ -346,11 +366,12 @@ class Ui_MainWindow(object):
             #Port Scan
             #Only execute if checkbox is checked:
             if (self.checkBox.isChecked()):
+                #Clears port list.
+                self.li_ports.clear()
                 #Scans first IP address in list; function returns 
                 #list of open ports.
                 scanner = nosPortScanner.PortScanner()
-                portsToScan = {22, 53, 80, 139, 445}
-                scanner.scan(addresses[0], portsToScan)
+                scanner.scan(addresses[0], self.portsToScan)
                 #Adds each port to gui list.
                 for port in scanner.portStates:
                     self.li_ports.addItem(port)
@@ -377,11 +398,13 @@ class Ui_MainWindow(object):
 
             #Add all of target data to list; used to save data
             #while switching displayed information.
-            self.targets.append(TargetData(domain, addresses, nameservers, 999, webserver, parsedData))
+            self.targets.append(TargetData(domain, addresses, nameservers, self.portsToScan, webserver, parsedData))
 
             #Add target to combo list for selection; selecting
             #target will display their scan's data.
             windowhelp.addComboItem(self)
+            #Changes combobox display.
+            self.comboBox.setCurrentIndex(self.iteration)
 
             self.iteration += 1
 

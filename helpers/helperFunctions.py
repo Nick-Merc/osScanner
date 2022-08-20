@@ -8,6 +8,7 @@ def clearData(window):
     window.li_ports.clear()
     window.li_webserver.clear()
     window.li_whois.clear()
+    window.portsToScan = []
 
 def cleanReq(request):
     validLine = False
